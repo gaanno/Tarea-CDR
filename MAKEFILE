@@ -1,11 +1,17 @@
-CC=g++
-PARAMETROS=-o
-CLASE_COMUN= clases/Comun.h
-CLASES_SERVIDOR= clases/Tablero.cpp clases/Barco.cpp
-CLASES_CLIENTE= 
+CC = g++
+CFLAGS = -o
+CLIENTE = cliente
+SERVIDOR = servidor
+CLASE_COMUN = clases/Comun.h
+CLASES_SERVIDOR = clases/Tablero.cpp clases/Barco.cpp
+CLASES_CLIENTE = 
 
-servidor: servidor.cpp $(CLASES_SERVIDOR) $(CLASE_COMUN)
-	$(CC) $(PARAMETROS) servidor servidor.cpp 
+#all:
 
-cliente: cliente.cpp $(CLASES_CLIENTE) $(CLASE_COMUN)
-	$(CC) $(PARAMETROS) cliente cliente.cpp 
+$(SERVIDOR): $(SERVIDOR).cpp $(CLASES_SERVIDOR) $(CLASE_COMUN)
+	$(CC) $(CFLAGS) $(SERVIDOR) $(SERVIDOR).cpp 
+
+$(CLIENTE): $(CLIENTE).cpp $(CLASES_CLIENTE) $(CLASE_COMUN)
+	$(CC) $(CFLAGS) $(CLIENTE) $(CLIENTE).cpp   
+ 
+#clean:
