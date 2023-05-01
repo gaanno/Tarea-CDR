@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <cctype>
 
 #include "Tablero.h"
 #include "Barco.h"
