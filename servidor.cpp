@@ -1,9 +1,9 @@
 #include <iostream>
 #include <vector>
 
-#include "Tablero.h"
-#include "Barco.h"
-#include "Comun.h"
+#include "clases/Tablero.h"
+#include "clases/Barco.h"
+#include "clases/Comun.h"
 
 using namespace std;
 

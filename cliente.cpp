@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include "Comun.h"
+#include "clases/Comun.h"
 
 using namespace std;
 
