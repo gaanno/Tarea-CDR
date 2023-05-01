@@ -1,0 +1,6 @@
+
+servidor: servidor.cpp Tablero.h Barco.h Comun.h
+	g++ servidor.cpp -o servidor
+
+cliente: cliente.cpp Comun.h
+	g++ cliente.cpp -o cliente

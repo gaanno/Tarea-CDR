@@ -1,17 +1,27 @@
 #include <iostream>
 #include <vector>
+#include <cctype>
+
 #include "Tablero.h"
 #include "Barco.h"
+#include "Comun.h"
 
 using namespace std;
 
 vector<Barco> inicializarBarcos();
 
-int main()
+int main(int argc, char *argv[])
 {
+    if (argc != 2 || !comun::esNumero(argv[1]))
+    {
+        cout << "ERROR: Parametros invalidos" << endl;
+        exit(1);
+    }
+    const string PUERTO = argv[1];
+
     // estas cosas meterlas a hebras
-    vector<Barco> barcos = inicializarBarcos();
     Tablero tablero;
+    vector<Barco> barcos = inicializarBarcos();
     tablero.imprimirTablero();
     return 0;
 }

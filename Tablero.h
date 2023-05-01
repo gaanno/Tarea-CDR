@@ -1,6 +1,5 @@
 #include <array>
 #include <iostream>
-#include <Barco.h>
 
 #define LARGO_TABLERO 15
 #define RANURA_VACIA '-'
