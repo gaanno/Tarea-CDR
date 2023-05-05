@@ -2,21 +2,24 @@
 #include <iostream>
 
 #define LARGO_TABLERO 15
-#define RANURA_VACIA '\0'
+//#define RANURA_VACIA '\0'
+#define RANURA_VACIA '-'
 
 using namespace std;
 
 class Tablero
 {
+private:
+    char tablero[LARGO_TABLERO][LARGO_TABLERO];
+
 public:
     Tablero();
     void imprimirTablero();
     void iniciarTableroManual();
     void iniciarTableroAutomatico();
+    string getTableroComoMensaje();
     void disparar(int fila, int columna);
 
-private:
-    char tablero[LARGO_TABLERO][LARGO_TABLERO];
 };
 
 /**
@@ -33,7 +36,28 @@ Tablero::Tablero()
         }
     }
 }
+string Tablero::getTableroComoMensaje()
+{
+    string mensaje;
+    char letraFila = 'A';
+    for (int fila = 0; fila < LARGO_TABLERO; fila++)
+    {
+        string l(1, letraFila++);
 
+        mensaje = mensaje.append(l + "\t|\t");
+        for (int columna = 0; columna < LARGO_TABLERO; columna++)
+        {
+            string letra(1, this->tablero[fila][columna]);
+            mensaje = mensaje.append(letra + "\t");
+        }
+        mensaje = mensaje.append( "\n");
+    }
+    mensaje = mensaje.append("\t\t");
+    for(int i = 0; i < LARGO_TABLERO; i++){
+        mensaje = mensaje.append(to_string(i) + "\t");
+    }
+    return mensaje;
+}
 void Tablero::imprimirTablero()
 {
     char letraFila = 'A';
@@ -57,8 +81,10 @@ void Tablero::imprimirTablero()
         if (i == 0 || i == 1)
         {
             cout << "\t";
-        }else{
-        cout << i - 2 << "\t";
+        }
+        else
+        {
+            cout << i - 2 << "\t";
         }
     }
     cout << endl;
