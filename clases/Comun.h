@@ -9,7 +9,7 @@ using namespace std;
 namespace comun
 {
 
-    // verifica si el puerto es de tipo entero
+    // verifica si el string es de tipo entero
     bool esNumero(const std::string &str)
     {
         if (str.length() == 0)
@@ -63,6 +63,12 @@ namespace comun
     valid, else return 0 */
     int esIPValida(char *ip_str)
     {
+        if (strcmp(ip_str, "localhost") == 0 || strcmp(ip_str, "127.0.0.1") == 0)
+        {
+            string localhost = "127.0.0.1";
+            strcpy(ip_str, localhost.c_str());
+            return true;
+        }
         // if empty string then return false
         if (ip_str == NULL)
             return 0;

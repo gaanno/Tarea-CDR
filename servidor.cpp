@@ -1,7 +1,6 @@
 #include <netinet/in.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -15,14 +14,12 @@
 using namespace std;
 
 vector<Barco> inicializarBarcos();
+void verificarArgumentosServidor(int argc, char *argv[]);
 
 int main(int argc, char *argv[])
 {
-    if (argc != 2 || !comun::esNumero(argv[1]))
-    {
-        cout << "ERROR: Parametros invalidos" << endl;
-        exit(1);
-    }
+    verificarArgumentosServidor(argc, argv);
+
     int puerto;
     sscanf(argv[1], "%d", &puerto);
 
@@ -56,7 +53,6 @@ int main(int argc, char *argv[])
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(puerto);
 
-    // Forcefully attaching socket to the port 8080
     if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
     {
         perror("bind failed");
@@ -81,7 +77,17 @@ int main(int argc, char *argv[])
     close(new_socket);
     // closing the listening socket
     shutdown(server_fd, SHUT_RDWR);
+    
     return 0;
+}
+
+void verificarArgumentosServidor(int argc, char *argv[])
+{
+    if (argc != 2 || !comun::esNumero(argv[1]))
+    {
+        cout << "ERROR: Parametros invalidos" << endl;
+        exit(1);
+    }
 }
 
 vector<Barco> inicializarBarcos()
