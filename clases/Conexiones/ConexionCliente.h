@@ -16,7 +16,7 @@ using namespace std;
 class ConexionCliente : private Conexion
 {
 public:
-    ConexionCliente(string IPServidor, int puerto);
+    ConexionCliente(int puerto,string IPServidor);
     void mostrarEstadoConexion();
     void enviarMensaje(string mensaje);
     void cerrarConexion();
@@ -27,17 +27,17 @@ private:
     int client_fd;
     struct sockaddr_in serv_addr;
 
-    void configurarServidor();
-    void configurarCliente();
+    void configurarConexion();
+    void configurarSocket();
     void configurarEstado();
     void validarConexion();
     void recibirMensaje();
 };
 
-ConexionCliente::ConexionCliente(string IPServidor, int puerto):Conexion(IPServidor, puerto)
+ConexionCliente::ConexionCliente(int puerto,string IPServidor):Conexion(puerto,IPServidor)
 {
-    configurarServidor();
-    configurarCliente();
+    configurarConexion();
+    configurarSocket();
     configurarEstado();
     validarConexion();
 }
@@ -53,14 +53,14 @@ void ConexionCliente::mostrarEstadoConexion()
     cout << "Serv_addr.sin_family: " << serv_addr.sin_family << endl;
 }
 
-void ConexionCliente::configurarServidor()
+void ConexionCliente::configurarConexion()
 {
     // serv_addr.sin_family = (comun::esIPLocal(this->IPServidor)) ? AF_UNIX : AF_INET; //DEBERIA SER ESTA
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(getPuerto());
 }
 
-void ConexionCliente::configurarCliente()
+void ConexionCliente::configurarSocket()
 {
     client_fd = socket(serv_addr.sin_family, SOCK_STREAM, 0);
     if (client_fd < 0)

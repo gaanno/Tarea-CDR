@@ -8,7 +8,7 @@ using namespace std;
 class Conexion
 {
 public:
-    Conexion(string ip,int puerto);
+    Conexion(int puerto, string ip = "127.0.0.1");
     string getIP();
     int getPuerto();
 
@@ -17,7 +17,7 @@ private:
     int puerto;
 };
 
-Conexion::Conexion(string IP, int puerto)
+Conexion::Conexion(int puerto, string IP)
 {
     this->IP = IP;
     this->puerto = puerto;

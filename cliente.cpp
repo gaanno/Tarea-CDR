@@ -9,10 +9,10 @@ void verificarArgumentosCliente(int argc, char *argv[]);
 int main(int argc, char *argv[])
 {
     verificarArgumentosCliente(argc, argv);
-    ConexionCliente enlace(argv[1], atoi(argv[2]));
-
+    ConexionCliente enlace(atoi(argv[2]),argv[1]);
+    cout<< "aaa" << endl;
     enlace.mostrarEstadoConexion();
-    enlace.enviarMensaje("soy un mensaje de prueba");
+    enlace.enviarMensaje("soy un mensaje desde cliente");
     return 0;
 }
 
