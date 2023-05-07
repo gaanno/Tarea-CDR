@@ -14,13 +14,13 @@ public:
 
 private:
     string IP;
-    int p;
+    int puerto;
 };
 
 Conexion::Conexion(string IP, int puerto)
 {
     this->IP = IP;
-    this->p = puerto;
+    this->puerto = puerto;
 }
 
 string Conexion::getIP()
