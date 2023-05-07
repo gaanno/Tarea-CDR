@@ -1,6 +1,7 @@
 #include <iostream>
 #include "clases/Comun.h"
-#include "clases/ConexionCliente.h"
+#include "clases/Conexiones/ConexionCliente.h"
+
 
 using namespace std;
 void verificarArgumentosCliente(int argc, char *argv[]);
@@ -8,12 +9,10 @@ void verificarArgumentosCliente(int argc, char *argv[]);
 int main(int argc, char *argv[])
 {
     verificarArgumentosCliente(argc, argv);
-    ConexionCliente enlace(argv[1], atoi(argv[2]));
-
-
+    ConexionCliente enlace(atoi(argv[2]),argv[1]);
+    cout<< "aaa" << endl;
     enlace.mostrarEstadoConexion();
-    enlace.enviarMensaje("soy un mensaje de prueba");
-    enlace.recibirMensaje();
+    enlace.enviarMensaje("soy un mensaje desde cliente");
     return 0;
 }
 
@@ -25,5 +24,3 @@ void verificarArgumentosCliente(int argc, char *argv[])
         exit(1);
     }
 }
-
-

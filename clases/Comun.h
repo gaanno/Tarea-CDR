@@ -1,21 +1,30 @@
 #include <iostream>
-#include <cctype>
+#include <cstring>
 #include <string>
-#include <bits/stdc++.h>
+#include <vector>
+#include <netdb.h>
+#include <unistd.h>
+#include <arpa/inet.h>
 
-#define DELIM "."
+#define LOCALHOST "127.0.0.1"
 using namespace std;
 
+#ifndef COMUN_H
+#define COMUN_H
 namespace comun
 {
-
+    bool esIPLocal(string ip)
+    {
+    char host[256];
+    int hostname = gethostname(host, sizeof(host)); 
+    struct hostent *host_entry = gethostbyname(host); 
+    char* IPLocal = inet_ntoa(*((struct in_addr*) host_entry->h_addr_list[0]));
+    return ip == IPLocal || ip == LOCALHOST;
+        
+    }
     // verifica si el string es de tipo entero
     bool esNumero(const std::string &str)
     {
-        if (str.length() == 0)
-        {
-            return false;
-        }
         for (char const &val : str)
         {
             if (std::isdigit(val) == 0)
@@ -23,96 +32,58 @@ namespace comun
                 return false;
             }
         }
-        return true;
+        return (str.length() > 0) ? true : false;
     }
 
-    // verifica si la ip es valida
-    // https://www.geeksforgeeks.org/program-to-validate-an-ip-address/
-    /* function to check whether the
-       string passed is valid or not */
-    bool parteValida(char *s)
+    // Función para dividir la string `str` usando un delimitador dado
+    vector<string> split(const string &str, char delim)
     {
-        int n = strlen(s);
+        auto i = 0;
+        vector<string> list;
 
-        // if length of passed string is
-        // more than 3 then it is not valid
-        if (n > 3)
-            return false;
+        auto pos = str.find(delim);
 
-        // check if the string only contains digits
-        // if not then return false
-        for (int i = 0; i < n; i++)
-            if ((s[i] >= '0' && s[i] <= '9') == false)
-                return false;
-        string str(s);
-
-        // if the string is "00" or "001" or
-        // "05" etc then it is not valid
-        if (str.find('0') == 0 && n > 1)
-            return false;
-        stringstream geek(str);
-        int x;
-        geek >> x;
-
-        // the string is valid if the number
-        // generated is between 0 to 255
-        return (x >= 0 && x <= 255);
-    }
-
-    /* return 1 if IP string is
-    valid, else return 0 */
-    int esIPValida(char *ip_str)
-    {
-        if (strcmp(ip_str, "localhost") == 0 || strcmp(ip_str, "127.0.0.1") == 0)
+        while (pos != string::npos)
         {
-            string localhost = "127.0.0.1";
-            strcpy(ip_str, localhost.c_str());
+            list.push_back(str.substr(i, pos - i));
+            i = ++pos;
+            pos = str.find(delim, pos);
+        }
+
+        list.push_back(str.substr(i, str.length()));
+
+        return list;
+    }
+
+    // Función para validar una dirección IP
+    bool esIPValida(string ip)
+    {
+        if (esIPLocal(ip))
+        {
             return true;
         }
-        // if empty string then return false
-        if (ip_str == NULL)
-            return 0;
-        int i, num, dots = 0;
-        int len = strlen(ip_str);
-        int count = 0;
 
-        // the number dots in the original
-        // string should be 3
-        // for it to be valid
-        for (int i = 0; i < len; i++)
-            if (ip_str[i] == '.')
-                count++;
-        if (count != 3)
-            return false;
+        // dividir la string en tokens
+        vector<string> list = split(ip, '.');
 
-        // See following link for strtok()
-
-        char *ptr = strtok(ip_str, DELIM);
-        if (ptr == NULL)
-            return 0;
-
-        while (ptr)
+        // si el tamaño del token no es igual a cuatro
+        if (list.size() != 4)
         {
-
-            /* after parsing string, it must be valid */
-            if (parteValida(ptr))
-            {
-                /* parse remaining string */
-                ptr = strtok(NULL, ".");
-                if (ptr != NULL)
-                    ++dots;
-            }
-            else
-                return 0;
+            return false;
         }
 
-        /* valid IP string must contain 3 dots */
-        // this is for the cases such as 1...1 where
-        // originally the no. of dots is three but
-        // after iteration of the string we find
-        // it is not valid
-        if (dots != 3)
-            return 0;
-        return 1;
+        // validar cada ficha
+        for (string str : list)
+        {
+            // verifica que la string sea un número o no, y los números
+            // están en el rango válido
+            if (!esNumero(str) || stoi(str) > 255 || stoi(str) < 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
+#endif

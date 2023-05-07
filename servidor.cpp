@@ -7,9 +7,10 @@
 #include <iostream>
 #include <vector>
 
-#include "clases/Tablero.h"
-#include "clases/Barco.h"
+#include "clases/Tablero/Tablero.h"
+#include "clases/Barco/Barco.h"
 #include "clases/Comun.h"
+#include "clases/Conexiones/ConexionServidor.h"
 
 using namespace std;
 
@@ -19,65 +20,12 @@ void verificarArgumentosServidor(int argc, char *argv[]);
 int main(int argc, char *argv[])
 {
     verificarArgumentosServidor(argc, argv);
-
-    int puerto;
-    sscanf(argv[1], "%d", &puerto);
-
-    int server_fd, new_socket, valread;
-
-    // estas cosas meterlas a hebras
+    ConexionServidor servidor(atoi(argv[1]));
     Tablero tablero;
-    vector<Barco> barcos = inicializarBarcos();
-    struct sockaddr_in address;
-    int opt = 1;
-    int addrlen = sizeof(address);
-    char buffer[1024] = {0};
-    string mensaje = tablero.getTableroComoMensaje();
-
-    char *hello = new char[mensaje.length() + 1];
-    strcpy(hello, mensaje.c_str());
-
-    // Creating socket file descriptor
-    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-    {
-        perror("socket failed");
-        exit(EXIT_FAILURE);
-    }
-
-    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
-    {
-        perror("setsockopt");
-        exit(EXIT_FAILURE);
-    }
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(puerto);
-
-    if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
-    {
-        perror("bind failed");
-        exit(EXIT_FAILURE);
-    }
-    if (listen(server_fd, 3) < 0)
-    {
-        perror("listen");
-        exit(EXIT_FAILURE);
-    }
-    if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t *)&addrlen)) < 0)
-    {
-        perror("accept");
-        exit(EXIT_FAILURE);
-    }
-    valread = read(new_socket, buffer, 1024);
-    printf("%s\n", buffer);
-    send(new_socket, hello, strlen(hello), 0);
-    printf("Hello message sent\n");
-
-    // closing the connected socket
-    close(new_socket);
-    // closing the listening socket
-    shutdown(server_fd, SHUT_RDWR);
+    servidor.enviarMensaje(tablero.getTableroComoMensaje());
     
+    servidor.cerrarConexion();
+    servidor.apagar();
     return 0;
 }
 
