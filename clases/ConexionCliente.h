@@ -7,7 +7,6 @@
 #include "Comun.h"
 
 #define TAMANO_BUFFER 1024
-#define LOCALHOST "127.0.0.1"
 
 using namespace std;
 
@@ -49,7 +48,8 @@ ConexionCliente::ConexionCliente(string IPServidor, int puerto)
 
 void ConexionCliente::mostrarEstadoConexion()
 {
-    cout << "IP: " << IPServidor << endl;
+    cout << "IP:" << IPServidor << endl;
+    cout << "Es IP local: " << (comun::esIPLocal(IPServidor) ? "Si" : "No") << endl;
     cout << "Puerto: " << puerto << endl;
     cout << "Client_fd: " << client_fd << endl;
     cout << "Status: " << status << endl;
@@ -59,7 +59,7 @@ void ConexionCliente::mostrarEstadoConexion()
 
 void ConexionCliente::configurarServidor()
 {
-    //serv_addr.sin_family = (this->IPServidor == LOCALHOST || comun::esIPLocal(this->IPServidor)) ? AF_UNIX : AF_INET; //DEBERIA SER ESTA
+    // serv_addr.sin_family = (comun::esIPLocal(this->IPServidor)) ? AF_UNIX : AF_INET; //DEBERIA SER ESTA
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(puerto);
 }

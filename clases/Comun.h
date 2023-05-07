@@ -2,14 +2,11 @@
 #include <cstring>
 #include <string>
 #include <vector>
-
 #include <netdb.h>
-
 #include <unistd.h>
-#include <netdb.h>
 #include <arpa/inet.h>
 
-
+#define LOCALHOST "127.0.0.1"
 using namespace std;
 
 #ifndef COMUN_H
@@ -22,7 +19,7 @@ namespace comun
     int hostname = gethostname(host, sizeof(host)); 
     struct hostent *host_entry = gethostbyname(host); 
     char* IPLocal = inet_ntoa(*((struct in_addr*) host_entry->h_addr_list[0]));
-    return ip == IPLocal;
+    return ip == IPLocal || ip == LOCALHOST;
         
     }
     // verifica si el string es de tipo entero
