@@ -7,8 +7,8 @@
 #include <iostream>
 #include <vector>
 
-#include "clases/Tablero.h"
-#include "clases/Barco.h"
+#include "clases/Tablero/Tablero.h"
+#include "clases/Barco/Barco.h"
 #include "clases/Comun.h"
 
 using namespace std;

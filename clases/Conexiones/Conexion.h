@@ -30,6 +30,6 @@ string Conexion::getIP()
 
 int Conexion::getPuerto()
 {
-    return p;
+    return puerto;
 }
 #endif

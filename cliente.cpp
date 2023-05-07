@@ -1,6 +1,6 @@
 #include <iostream>
 #include "clases/Comun.h"
-#include "clases/ConexionCliente.h"
+#include "clases/Conexiones/ConexionCliente.h"
 
 
 using namespace std;

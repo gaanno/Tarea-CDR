@@ -4,19 +4,20 @@
 #include <iostream>
 #include <string>
 
-#include "Comun.h"
+#include "../Comun.h"
 #include "Conexion.h"
 
 #define TAMANO_BUFFER 1024
 
 using namespace std;
 
+#ifndef CONEXIONCLIENTE_H
+#define CONEXIONCLIENTE_H
 class ConexionCliente : private Conexion
 {
 public:
     ConexionCliente(string IPServidor, int puerto);
     void mostrarEstadoConexion();
-
     void enviarMensaje(string mensaje);
     void cerrarConexion();
 
@@ -31,13 +32,10 @@ private:
     void configurarEstado();
     void validarConexion();
     void recibirMensaje();
-    void setSocketOptions();
 };
 
 ConexionCliente::ConexionCliente(string IPServidor, int puerto):Conexion(IPServidor, puerto)
 {
-    //imprimer la ip de la clase superior
-
     configurarServidor();
     configurarCliente();
     configurarEstado();
@@ -108,7 +106,4 @@ void ConexionCliente::cerrarConexion()
 {
     close(client_fd);
 }
-
-void ConexionCliente::setSocketOptions()
-{
-}
+#endif
