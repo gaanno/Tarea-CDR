@@ -1,16 +1,17 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <unistd.h>
-
 #include <iostream>
 #include <string>
+
 #include "Comun.h"
+#include "Conexion.h"
 
 #define TAMANO_BUFFER 1024
 
 using namespace std;
 
-class ConexionCliente
+class ConexionCliente : private Conexion
 {
 public:
     ConexionCliente(string IPServidor, int puerto);
@@ -20,8 +21,6 @@ public:
     void cerrarConexion();
 
 private:
-    string IPServidor;
-    int puerto;
     int status;
     int valread;
     int client_fd;
@@ -35,10 +34,9 @@ private:
     void setSocketOptions();
 };
 
-ConexionCliente::ConexionCliente(string IPServidor, int puerto)
+ConexionCliente::ConexionCliente(string IPServidor, int puerto):Conexion(IPServidor, puerto)
 {
-    this->IPServidor = IPServidor;
-    this->puerto = puerto;
+    //imprimer la ip de la clase superior
 
     configurarServidor();
     configurarCliente();
@@ -48,9 +46,9 @@ ConexionCliente::ConexionCliente(string IPServidor, int puerto)
 
 void ConexionCliente::mostrarEstadoConexion()
 {
-    cout << "IP:" << IPServidor << endl;
-    cout << "Es IP local: " << (comun::esIPLocal(IPServidor) ? "Si" : "No") << endl;
-    cout << "Puerto: " << puerto << endl;
+    cout << "IP:" << getIP() << endl;
+    cout << "Es IP local: " << (comun::esIPLocal(getIP()) ? "Si" : "No") << endl;
+    cout << "Puerto: " << getPuerto() << endl;
     cout << "Client_fd: " << client_fd << endl;
     cout << "Status: " << status << endl;
     cout << "Valread: " << valread << endl;
@@ -61,7 +59,7 @@ void ConexionCliente::configurarServidor()
 {
     // serv_addr.sin_family = (comun::esIPLocal(this->IPServidor)) ? AF_UNIX : AF_INET; //DEBERIA SER ESTA
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(puerto);
+    serv_addr.sin_port = htons(getPuerto());
 }
 
 void ConexionCliente::configurarCliente()
@@ -86,7 +84,7 @@ void ConexionCliente::configurarEstado()
 
 void ConexionCliente::validarConexion()
 {
-    if (inet_pton(serv_addr.sin_family, IPServidor.data(), &serv_addr.sin_addr) <= 0)
+    if (inet_pton(serv_addr.sin_family, getIP().data(), &serv_addr.sin_addr) <= 0)
     {
         cout << "Error: Direccion invalida o no soportada" << endl;
         exit(1);
