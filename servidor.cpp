@@ -1,9 +1,3 @@
-#include <netinet/in.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/socket.h>
-#include <unistd.h>
-
 #include <iostream>
 #include <vector>
 
@@ -20,12 +14,15 @@ void verificarArgumentosServidor(int argc, char *argv[]);
 int main(int argc, char *argv[])
 {
     verificarArgumentosServidor(argc, argv);
+
+    Tablero tablero = Tablero();
     ConexionServidor servidor(atoi(argv[1]));
-    Tablero tablero;
+    servidor.mostrarEstadoConexion();
+    servidor.escucharPuerto();
     servidor.enviarMensaje(tablero.getTableroComoMensaje());
-    
     servidor.cerrarConexion();
     servidor.apagar();
+
     return 0;
 }
 

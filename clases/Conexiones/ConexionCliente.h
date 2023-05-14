@@ -4,7 +4,6 @@
 #include <iostream>
 #include <string>
 
-#include "../Comun.h"
 #include "Conexion.h"
 
 #define TAMANO_BUFFER 1024
@@ -16,10 +15,11 @@ using namespace std;
 class ConexionCliente : private Conexion
 {
 public:
-    ConexionCliente(int puerto,string IPServidor);
+    ConexionCliente(int puerto, string IPServidor);
     void mostrarEstadoConexion();
     void enviarMensaje(string mensaje);
     void cerrarConexion();
+    void recibirMensaje();
 
 private:
     int status;
@@ -31,22 +31,20 @@ private:
     void configurarSocket();
     void configurarEstado();
     void validarConexion();
-    void recibirMensaje();
 };
 
-ConexionCliente::ConexionCliente(int puerto,string IPServidor):Conexion(puerto,IPServidor)
+ConexionCliente::ConexionCliente(int puerto, string IPServidor) : Conexion(puerto, IPServidor)
 {
     configurarConexion();
     configurarSocket();
+    mostrarEstadoConexion();
     configurarEstado();
     validarConexion();
 }
 
 void ConexionCliente::mostrarEstadoConexion()
 {
-    cout << "IP:" << getIP() << endl;
-    cout << "Es IP local: " << (comun::esIPLocal(getIP()) ? "Si" : "No") << endl;
-    cout << "Puerto: " << getPuerto() << endl;
+    Conexion::mostrarEstadoConexion();
     cout << "Client_fd: " << client_fd << endl;
     cout << "Status: " << status << endl;
     cout << "Valread: " << valread << endl;
@@ -56,13 +54,16 @@ void ConexionCliente::mostrarEstadoConexion()
 void ConexionCliente::configurarConexion()
 {
     // serv_addr.sin_family = (comun::esIPLocal(this->IPServidor)) ? AF_UNIX : AF_INET; //DEBERIA SER ESTA
-    serv_addr.sin_family = AF_INET;
+    // ----
+    // ----
+    // arreglar esto
+    serv_addr.sin_family = Conexion::esIPLocal() ? AF_UNIX : AF_INET;
     serv_addr.sin_port = htons(getPuerto());
 }
 
 void ConexionCliente::configurarSocket()
 {
-    client_fd = socket(serv_addr.sin_family, SOCK_STREAM, 0);
+    client_fd = socket(serv_addr.sin_family, Conexion::esIPLocal() ? SOCK_DGRAM : SOCK_STREAM, 0);
     if (client_fd < 0)
     {
         cout << "ERROR: Falla al crear el socket" << endl;

@@ -2,8 +2,8 @@
 #include <iostream>
 
 #define LARGO_TABLERO 15
-//#define RANURA_VACIA '\0'
-#define RANURA_VACIA '-'
+// #define RANURA_VACIA '\0'
+#define RANURA_VACIA '?'
 
 using namespace std;
 
@@ -19,7 +19,6 @@ public:
     void iniciarTableroAutomatico();
     string getTableroComoMensaje();
     void disparar(int fila, int columna);
-
 };
 
 /**
@@ -28,66 +27,30 @@ public:
  */
 Tablero::Tablero()
 {
-    for (int fila = 0; fila < LARGO_TABLERO; fila++)
-    {
-        for (int columna = 0; columna < LARGO_TABLERO; columna++)
-        {
-            this->tablero[fila][columna] = RANURA_VACIA;
-        }
-    }
+    fill(*tablero, *tablero + LARGO_TABLERO * LARGO_TABLERO, RANURA_VACIA);
 }
+
 string Tablero::getTableroComoMensaje()
 {
     string mensaje;
     char letraFila = 'A';
-    for (int fila = 0; fila < LARGO_TABLERO; fila++)
-    {
-        string l(1, letraFila++);
 
-        mensaje = mensaje.append(l + "\t|\t");
+    for (int fila = 0; fila < LARGO_TABLERO + 2; fila++)
+    {
+        mensaje.append(fila < LARGO_TABLERO ? string(1, letraFila++) + "\t|\t" : "\t\t");
         for (int columna = 0; columna < LARGO_TABLERO; columna++)
         {
-            string letra(1, this->tablero[fila][columna]);
-            mensaje = mensaje.append(letra + "\t");
+            mensaje.append(fila < LARGO_TABLERO ? string(1, tablero[fila][columna]) : (fila == LARGO_TABLERO ? "-" : to_string(columna)));
+            mensaje.append("\t");
         }
-        mensaje = mensaje.append( "\n");
-    }
-    mensaje = mensaje.append("\t\t");
-    for(int i = 0; i < LARGO_TABLERO; i++){
-        mensaje = mensaje.append(to_string(i) + "\t");
+        mensaje.append("\n");
     }
     return mensaje;
 }
+
 void Tablero::imprimirTablero()
 {
-    char letraFila = 'A';
-
-    for (int fila = 0; fila < LARGO_TABLERO; fila++)
-    {
-        cout << letraFila++ << "\t|\t";
-        for (int columna = 0; columna < LARGO_TABLERO; columna++)
-        {
-            cout << this->tablero[fila][columna] << "\t";
-        }
-        cout << endl;
-    }
-    for (int i = 0; i < LARGO_TABLERO + 2; i++)
-    {
-        cout << "-\t";
-    }
-    cout << endl;
-    for (int i = 0; i < LARGO_TABLERO + 2; i++)
-    {
-        if (i == 0 || i == 1)
-        {
-            cout << "\t";
-        }
-        else
-        {
-            cout << i - 2 << "\t";
-        }
-    }
-    cout << endl;
+    cout << getTableroComoMensaje();
 }
 
 void Tablero::iniciarTableroManual()

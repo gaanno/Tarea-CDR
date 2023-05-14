@@ -14,6 +14,8 @@ class ConexionServidor : private Conexion
 {
 public:
     ConexionServidor(int puerto);
+    void escucharPuerto();
+
     void mostrarEstadoConexion();
     void enviarMensaje(string mensaje);
     void cerrarConexion();
@@ -32,7 +34,6 @@ private:
     void configurarSocket();
     void setSocketOptions();
     void configurarConexion();
-    void escucharPuerto();
     void recibirMensaje();
 };
 
@@ -44,19 +45,20 @@ ConexionServidor::ConexionServidor(int puerto) : Conexion(puerto)
     configurarConexion();
     configurarSocket();
     setSocketOptions();
-    escucharPuerto();
 }
 void ConexionServidor::mostrarEstadoConexion()
 {
-    cout << "IP:" << getIP() << endl;
-    cout << "Es IP local: " << (comun::esIPLocal(getIP()) ? "Si" : "No") << endl;
-    cout << "Puerto: " << getPuerto() << endl;
+    Conexion::mostrarEstadoConexion();
     cout << "server_fd: " << server_fd << endl;
     cout << "Valread: " << valread << endl;
     cout << "Serv_addr.sin_family: " << address.sin_family << endl;
 }
 void ConexionServidor::configurarConexion()
 {
+    // ver tipo de conexion
+    // ----
+    // ----
+    // arreglar esto
     address.sin_family = AF_INET;
     address.sin_port = htons(getPuerto());
     address.sin_addr.s_addr = INADDR_ANY;
@@ -73,7 +75,6 @@ void ConexionServidor::configurarSocket()
 
 void ConexionServidor::enviarMensaje(string mensaje)
 {
-    mostrarEstadoConexion();
     send(newSocket, mensaje.data(), mensaje.length(), 0);
     cout << "Mensaje enviado" << endl;
     recibirMensaje();
@@ -99,7 +100,7 @@ void ConexionServidor::escucharPuerto()
 {
     if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
     {
-        perror("bind failedaaa");
+        perror("bind failed");
         exit(EXIT_FAILURE);
     }
     if (listen(server_fd, 3) < 0)
