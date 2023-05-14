@@ -27,18 +27,14 @@ public:
  */
 Tablero::Tablero()
 {
-    for (int fila = 0; fila < LARGO_TABLERO; fila++)
-    {
-        for (int columna = 0; columna < LARGO_TABLERO; columna++)
-        {
-            this->tablero[fila][columna] = RANURA_VACIA;
-        }
-    }
+    fill(*tablero, *tablero + LARGO_TABLERO * LARGO_TABLERO, RANURA_VACIA);
 }
+
 string Tablero::getTableroComoMensaje()
 {
     string mensaje;
     char letraFila = 'A';
+
     for (int fila = 0; fila < LARGO_TABLERO + 2; fila++)
     {
         mensaje.append(fila < LARGO_TABLERO ? string(1, letraFila++) + "\t|\t" : "\t\t");
@@ -51,18 +47,10 @@ string Tablero::getTableroComoMensaje()
     }
     return mensaje;
 }
+
 void Tablero::imprimirTablero()
 {
-    char letraFila = 'A';
-    for (int fila = 0; fila < LARGO_TABLERO + 2; fila++)
-    {
-        cout << (fila < LARGO_TABLERO ? letraFila++ : '\0') << (fila < LARGO_TABLERO ? "\t|\t" : "\t\t");
-        for (int columna = 0; columna < LARGO_TABLERO; columna++)
-        {
-            cout << (fila < LARGO_TABLERO ? (string(1, tablero[fila][columna])) : (fila == LARGO_TABLERO ? "-" : to_string(columna))) << "\t";
-        }
-        cout << endl;
-    }
+    cout << getTableroComoMensaje();
 }
 
 void Tablero::iniciarTableroManual()

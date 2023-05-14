@@ -15,13 +15,14 @@ int main(int argc, char *argv[])
 {
     verificarArgumentosServidor(argc, argv);
 
+    Tablero tablero = Tablero();
     ConexionServidor servidor(atoi(argv[1]));
-    Tablero tablero;
-    tablero.imprimirTablero();
+    servidor.mostrarEstadoConexion();
+    servidor.escucharPuerto();
     servidor.enviarMensaje(tablero.getTableroComoMensaje());
     servidor.cerrarConexion();
     servidor.apagar();
-  
+
     return 0;
 }
 
