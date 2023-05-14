@@ -39,34 +39,27 @@ string Tablero::getTableroComoMensaje()
 {
     string mensaje;
     char letraFila = 'A';
-    for (int fila = 0; fila < LARGO_TABLERO; fila++)
+    for (int fila = 0; fila < LARGO_TABLERO + 2; fila++)
     {
-        string l(1, letraFila++);
-
-        mensaje = mensaje.append(l + "\t|\t");
+        mensaje.append(fila < LARGO_TABLERO ? string(1, letraFila++) + "\t|\t" : "\t\t");
         for (int columna = 0; columna < LARGO_TABLERO; columna++)
         {
-            string letra(1, this->tablero[fila][columna]);
-            mensaje = mensaje.append(letra + "\t");
+            mensaje.append(fila < LARGO_TABLERO ? string(1, tablero[fila][columna]) : (fila == LARGO_TABLERO ? "-" : to_string(columna)));
+            mensaje.append("\t");
         }
-        mensaje = mensaje.append("\n");
-    }
-    mensaje = mensaje.append("\t\t");
-    for (int i = 0; i < LARGO_TABLERO; i++)
-    {
-        mensaje = mensaje.append(to_string(i) + "\t");
+        mensaje.append("\n");
     }
     return mensaje;
 }
 void Tablero::imprimirTablero()
 {
     char letraFila = 'A';
-    for (int fila = 0; fila <= LARGO_TABLERO + 1; fila++)
+    for (int fila = 0; fila < LARGO_TABLERO + 2; fila++)
     {
         cout << (fila < LARGO_TABLERO ? letraFila++ : '\0') << (fila < LARGO_TABLERO ? "\t|\t" : "\t\t");
         for (int columna = 0; columna < LARGO_TABLERO; columna++)
         {
-            cout << (fila < LARGO_TABLERO ? (string(1, this->tablero[fila][columna])) : (fila == LARGO_TABLERO ? "-" : to_string(columna))) << "\t";
+            cout << (fila < LARGO_TABLERO ? (string(1, tablero[fila][columna])) : (fila == LARGO_TABLERO ? "-" : to_string(columna))) << "\t";
         }
         cout << endl;
     }
