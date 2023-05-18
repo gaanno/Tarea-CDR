@@ -1,6 +1,7 @@
 #include <array>
 #include <iostream>
 #include <vector>
+#include <string>
 #include "clases/Barco/Barco.h"
 
 #define LARGO_TABLERO 15
@@ -22,6 +23,9 @@ public:
     void iniciarTableroAutomatico();
     string getTableroComoMensaje();
     void disparar(int fila, int columna);
+    bool esPosibleColocarBarco(const Barco& barco, int fila, int columna, char direccion);
+    void Tablero::colocarBarco(const Barco& barco, int fila, int columna, char direccion);
+
 };
 
 
@@ -31,7 +35,12 @@ std::vector<Barco> inicializarBarcos(); // Declaración de la función inicializ
     Crea un tablero nuevo y lo inicializa con ranuras vacias */
 Tablero::Tablero()
 {
-    tablero.resize(LARGO_TABLERO, vector<char>(LARGO_TABLERO, RANURA_VACIA));
+    for (int fila = 0; fila < LARGO_TABLERO; fila++) {
+        for (int columna = 0; columna < LARGO_TABLERO; columna++) {
+            tablero[fila][columna] = RANURA_VACIA;
+        }
+    }
+
     barcos = inicializarBarcos();
 }
 
