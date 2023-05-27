@@ -18,11 +18,22 @@ int main(int argc, char *argv[])
     Tablero tablero = Tablero();
     ConexionServidor servidor(atoi(argv[1]));
     servidor.mostrarEstadoConexion();
-    servidor.escucharPuerto();
-    servidor.enviarMensaje(tablero.getTableroComoMensaje());
+
+    try
+    {
+        servidor.recibirMensaje();
+        while (true)
+        {
+            servidor.enviarMensaje(tablero.getTableroComoMensaje());
+            servidor.recibirMensaje();
+        }
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << '\n';
+    }
     servidor.cerrarConexion();
     servidor.apagar();
-
     return 0;
 }
 

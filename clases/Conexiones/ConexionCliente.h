@@ -20,6 +20,7 @@ public:
     void enviarMensaje(string mensaje);
     void cerrarConexion();
     void recibirMensaje();
+    bool estaConectado();
 
 private:
     int status;
@@ -37,9 +38,9 @@ ConexionCliente::ConexionCliente(int puerto, string IPServidor) : Conexion(puert
 {
     configurarConexion();
     configurarSocket();
-    mostrarEstadoConexion();
     configurarEstado();
     validarConexion();
+
 }
 
 void ConexionCliente::mostrarEstadoConexion()
@@ -57,13 +58,14 @@ void ConexionCliente::configurarConexion()
     // ----
     // ----
     // arreglar esto
-    serv_addr.sin_family = Conexion::esIPLocal() ? AF_UNIX : AF_INET;
+    serv_addr.sin_family = Conexion::esIntraconexion() ? AF_UNIX : AF_INET;
     serv_addr.sin_port = htons(getPuerto());
+    serv_addr.sin_addr.s_addr = inet_addr(getIP().data());
 }
 
 void ConexionCliente::configurarSocket()
 {
-    client_fd = socket(serv_addr.sin_family, Conexion::esIPLocal() ? SOCK_DGRAM : SOCK_STREAM, 0);
+    client_fd = socket(serv_addr.sin_family, Conexion::esIntraconexion() ? SOCK_DGRAM : SOCK_STREAM, 0);
     if (client_fd < 0)
     {
         cout << "ERROR: Falla al crear el socket" << endl;
@@ -73,8 +75,9 @@ void ConexionCliente::configurarSocket()
 
 void ConexionCliente::configurarEstado()
 {
-    status = connect(client_fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
-    if (status < 0)
+    
+   //verifica si se conecto al puerto especificado
+    if ((status = connect(client_fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr))) < 0 )
     {
         cout << "Error: Conexion fallida" << endl;
         exit(1);
@@ -83,6 +86,7 @@ void ConexionCliente::configurarEstado()
 
 void ConexionCliente::validarConexion()
 {
+    cout << inet_pton(serv_addr.sin_family, getIP().data(), &serv_addr.sin_addr) << endl;
     if (inet_pton(serv_addr.sin_family, getIP().data(), &serv_addr.sin_addr) <= 0)
     {
         cout << "Error: Direccion invalida o no soportada" << endl;
@@ -93,7 +97,6 @@ void ConexionCliente::validarConexion()
 void ConexionCliente::enviarMensaje(string mensaje)
 {
     send(client_fd, mensaje.data(), mensaje.length(), 0);
-    recibirMensaje();
 }
 
 void ConexionCliente::recibirMensaje()
@@ -107,4 +110,10 @@ void ConexionCliente::cerrarConexion()
 {
     close(client_fd);
 }
+
+bool ConexionCliente::estaConectado()
+{
+    return status >= 0;
+}
+
 #endif

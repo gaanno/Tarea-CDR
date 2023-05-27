@@ -16,6 +16,7 @@ public:
     ConexionServidor(int puerto);
     void escucharPuerto();
 
+    void recibirMensaje();
     void mostrarEstadoConexion();
     void enviarMensaje(string mensaje);
     void cerrarConexion();
@@ -27,14 +28,12 @@ private:
     int server_fd;
     int newSocket;
     int valread;
-
     int opt;
     int addrlen;
 
     void configurarSocket();
     void setSocketOptions();
     void configurarConexion();
-    void recibirMensaje();
 };
 
 ConexionServidor::ConexionServidor(int puerto) : Conexion(puerto)
@@ -45,6 +44,7 @@ ConexionServidor::ConexionServidor(int puerto) : Conexion(puerto)
     configurarConexion();
     configurarSocket();
     setSocketOptions();
+    escucharPuerto();
 }
 void ConexionServidor::mostrarEstadoConexion()
 {
@@ -59,14 +59,16 @@ void ConexionServidor::configurarConexion()
     // ----
     // ----
     // arreglar esto
-    address.sin_family = AF_INET;
+    address.sin_family = Conexion::esIntraconexion() ? AF_UNIX : AF_INET;
+    //address.sin_family = AF_INET;
+
     address.sin_port = htons(getPuerto());
     address.sin_addr.s_addr = INADDR_ANY;
 }
 
 void ConexionServidor::configurarSocket()
 {
-    if ((server_fd = socket(address.sin_family, SOCK_STREAM, 0)) < 0)
+    if ((server_fd = socket(address.sin_family,  Conexion::esIntraconexion() ? SOCK_DGRAM : SOCK_STREAM, 0)) < 0)
     {
         perror("socket failed");
         exit(EXIT_FAILURE);
@@ -75,16 +77,22 @@ void ConexionServidor::configurarSocket()
 
 void ConexionServidor::enviarMensaje(string mensaje)
 {
-    send(newSocket, mensaje.data(), mensaje.length(), 0);
-    cout << "Mensaje enviado" << endl;
-    recibirMensaje();
+    try
+    {
+        send(newSocket, mensaje.data(), mensaje.length(), 0);
+    }
+    catch (const std::exception &e)
+    {
+        perror("Conexion abortada");
+        exit(1);
+    };
 }
 
 void ConexionServidor::recibirMensaje()
 {
     char buffer[TAMANO_BUFFER] = {0};
     valread = read(newSocket, buffer, TAMANO_BUFFER);
-    cout << buffer << endl;
+    cout << "Mensaje desde el cliente: " << buffer << endl;
 }
 
 void ConexionServidor::setSocketOptions()
@@ -98,16 +106,20 @@ void ConexionServidor::setSocketOptions()
 
 void ConexionServidor::escucharPuerto()
 {
-    if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
+    if (newSocket != 4)
     {
-        perror("bind failed");
-        exit(EXIT_FAILURE);
+        if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
+        {
+            perror("bind failed");
+            exit(EXIT_FAILURE);
+        }
+        if (listen(server_fd, 3) < 0)
+        {
+            perror("listen");
+            exit(EXIT_FAILURE);
+        }
     }
-    if (listen(server_fd, 3) < 0)
-    {
-        perror("listen");
-        exit(EXIT_FAILURE);
-    }
+
     if ((newSocket = accept(server_fd, (struct sockaddr *)&address, (socklen_t *)&addrlen)) < 0)
     {
         perror("accept");
