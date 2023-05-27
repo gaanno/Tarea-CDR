@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <cstring>
 #include "Conexion.h"
 
 #ifndef CONEXIONSERVIDOR_H
@@ -16,10 +17,12 @@ public:
     ConexionServidor(int puerto);
     void escucharPuerto();
 
+    void recibirMensaje();
     void mostrarEstadoConexion();
     void enviarMensaje(string mensaje);
     void cerrarConexion();
     void apagar();
+    string getUltimoMensaje();
 
 private:
     struct sockaddr_in address;
@@ -27,14 +30,14 @@ private:
     int server_fd;
     int newSocket;
     int valread;
-
     int opt;
     int addrlen;
+
+    char buffer[TAMANO_BUFFER] = {0};
 
     void configurarSocket();
     void setSocketOptions();
     void configurarConexion();
-    void recibirMensaje();
 };
 
 ConexionServidor::ConexionServidor(int puerto) : Conexion(puerto)
@@ -45,6 +48,7 @@ ConexionServidor::ConexionServidor(int puerto) : Conexion(puerto)
     configurarConexion();
     configurarSocket();
     setSocketOptions();
+    escucharPuerto();
 }
 void ConexionServidor::mostrarEstadoConexion()
 {
@@ -59,7 +63,11 @@ void ConexionServidor::configurarConexion()
     // ----
     // ----
     // arreglar esto
+    // address.sin_family = Conexion::esIntraconexion() ? AF_UNIX : AF_INET;
+    // deberia ser <sys/un.h>
+
     address.sin_family = AF_INET;
+
     address.sin_port = htons(getPuerto());
     address.sin_addr.s_addr = INADDR_ANY;
 }
@@ -75,16 +83,24 @@ void ConexionServidor::configurarSocket()
 
 void ConexionServidor::enviarMensaje(string mensaje)
 {
-    send(newSocket, mensaje.data(), mensaje.length(), 0);
-    cout << "Mensaje enviado" << endl;
-    recibirMensaje();
+    try
+    {
+        if (send(newSocket, mensaje.data(), mensaje.size(), 0) < 0)
+            throw std::runtime_error("Error al enviar mensaje");
+    }
+    catch (const std::exception &e)
+    {
+        perror("Conexion abortada");
+        exit(1);
+    };
 }
 
 void ConexionServidor::recibirMensaje()
 {
-    char buffer[TAMANO_BUFFER] = {0};
+    // vacia todo el buffer
+    memset(buffer, 0, TAMANO_BUFFER);
     valread = read(newSocket, buffer, TAMANO_BUFFER);
-    cout << buffer << endl;
+    //cout << "Mensaje desde el cliente: " << buffer << endl;
 }
 
 void ConexionServidor::setSocketOptions()
@@ -108,6 +124,7 @@ void ConexionServidor::escucharPuerto()
         perror("listen");
         exit(EXIT_FAILURE);
     }
+
     if ((newSocket = accept(server_fd, (struct sockaddr *)&address, (socklen_t *)&addrlen)) < 0)
     {
         perror("accept");
@@ -122,5 +139,11 @@ void ConexionServidor::cerrarConexion()
 void ConexionServidor::apagar()
 {
     shutdown(server_fd, SHUT_RDWR);
+}
+
+string ConexionServidor::getUltimoMensaje()
+{
+    string mensaje = buffer;
+    return mensaje;
 }
 #endif
