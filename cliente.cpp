@@ -5,6 +5,7 @@
 #include "clases/Conexiones/ConexionCliente.h"
 
 using namespace std;
+
 void verificarArgumentosCliente(int argc, char *argv[]);
 
 int main(int argc, char *argv[])
@@ -13,20 +14,21 @@ int main(int argc, char *argv[])
     ConexionCliente cliente = ConexionCliente(atoi(argv[2]), argv[1]);
     string mensaje;
 
-     cliente.mostrarEstadoConexion();
+    
 
     try
     {
-
+        cliente.recibirMensaje();
+        cliente.recibirMensaje();
         while (true)
         {
-            cout << "Ingrese su mensaje: ";
+            cout << "Ingrese su mensaje: " << endl;
             if (getline(cin, mensaje))
             {
-                if (mensaje.empty()){
+                if (mensaje.empty())
+                {
                     continue;
                 }
-
                 cliente.enviarMensaje(mensaje);
                 cliente.recibirMensaje();
             }

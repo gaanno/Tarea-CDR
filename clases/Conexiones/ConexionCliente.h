@@ -58,14 +58,15 @@ void ConexionCliente::configurarConexion()
     // ----
     // ----
     // arreglar esto
-    serv_addr.sin_family = Conexion::esIntraconexion() ? AF_UNIX : AF_INET;
+    //serv_addr.sin_family = Conexion::esIntraconexion() ? AF_UNIX : AF_INET;
+    serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(getPuerto());
     serv_addr.sin_addr.s_addr = inet_addr(getIP().data());
 }
 
 void ConexionCliente::configurarSocket()
 {
-    client_fd = socket(serv_addr.sin_family, Conexion::esIntraconexion() ? SOCK_DGRAM : SOCK_STREAM, 0);
+    client_fd = socket(serv_addr.sin_family, SOCK_STREAM, 0);
     if (client_fd < 0)
     {
         cout << "ERROR: Falla al crear el socket" << endl;
@@ -96,7 +97,11 @@ void ConexionCliente::validarConexion()
 
 void ConexionCliente::enviarMensaje(string mensaje)
 {
-    send(client_fd, mensaje.data(), mensaje.length(), 0);
+    if(send(client_fd, mensaje.data(), mensaje.length(), 0) < 0)
+    {
+        cout << "Error: No se pudo enviar el mensaje" << endl;
+        exit(1);
+    }
 }
 
 void ConexionCliente::recibirMensaje()

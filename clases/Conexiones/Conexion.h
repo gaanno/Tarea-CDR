@@ -12,7 +12,7 @@ using namespace std;
 class Conexion
 {
 public:
-    Conexion(int puerto, string ip = "");
+    Conexion(int puerto, string ip = "0.0.0.0");
     int getPuerto();
     string getIP();
     string getIPLocal();
@@ -122,7 +122,12 @@ void Conexion::preguntarTipoConexion()
         cin >> respuesta;
         if(comun::esNumero(respuesta) && (respuesta == "0" || respuesta == "1"))
         {
-            intraconexion = stoi(respuesta);
+            intraconexion = stoi(respuesta); // queda dando vueltas
+            if(respuesta == "1")
+            {
+                IP = "0.0.0.0"; // deberia ser un archivo aparte que use sys/un.h para af_unix
+            }
+            
         }
         else{
             cout << "Respuesta invalida" << endl;
