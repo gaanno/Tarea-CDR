@@ -1,16 +1,15 @@
 CC = g++
-CFLAGS = -fopenmp
+CFLAGS = -std=c++17
 CLASESSERVIDOR = clases/Tablero/Tablero.h clases/Barco/Barco.h clases/Comun.h clases/Conexiones/ConexionServidor.h
 CLASESCLIENTE = clases/Comun.h clases/Conexiones/ConexionCliente.h
 
 all: cliente servidor
 
 cliente: cliente.cpp $(CLASESCLIENTE)
-	$(CC)  -o cliente cliente.cpp
+	$(CC) $(CFLAGS) -o cliente cliente.cpp
 
 servidor: servidor.cpp $(CLASESSERVIDOR)
-	export CFLAGS
-	$(CC) $(CFLAGS) -o servidor servidor.cpp  -lpthread
+	$(CC) $(CFLAGS) -o servidor servidor.cpp  -lpthread -fopenmp
 
 clean:
 	rm -f cliente servidor
