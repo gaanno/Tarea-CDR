@@ -16,8 +16,8 @@ int main(int argc, char *argv[])
 
     try
     {
-        cliente.enviarMensaje("\nIP: " + cliente.getIP());
         cliente.recibirMensaje();
+        cliente.enviarMensaje("\nIP: " + cliente.getIP());
         while (true)
         {
             if (getline(cin, mensaje))

@@ -48,6 +48,7 @@ int main(int argc, char *argv[])
             {
                 servidor.enviarMensaje(mensajeInicial + formatoDisparo + ejemploDisparo + usuarioInicial + mensajeTablero + tableroCliente.getTableroComoMensaje() + mensajeTurno);
                 servidor.recibirMensaje();
+                cout << "Nueva conexion: " << servidor.getUltimoMensaje() << endl;
                 mensajeAnterior = servidor.getUltimoMensaje();
                 while (true)
                 {
