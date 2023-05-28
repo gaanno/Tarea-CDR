@@ -6,7 +6,7 @@
 
 #define LARGO_TABLERO 15
 // #define RANURA_VACIA '\0'
-#define RANURA_VACIA '?'
+#define RANURA_VACIA '.'
 
 using namespace std;
 

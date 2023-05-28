@@ -12,23 +12,26 @@ using namespace std;
 class Conexion
 {
 public:
-    Conexion(int puerto, string ip = "");
-    string getIP();
+    Conexion(int puerto, string ip = "0.0.0.0");
     int getPuerto();
-    void mostrarEstadoConexion();
+    string getIP();
     string getIPLocal();
     bool esIPLocal();
+    bool esIntraconexion();
+    void mostrarEstadoConexion();
 
 private:
     string IP;
     int puerto;
+    bool intraconexion;
     bool IPLocal = false;
     bool esIPValida(string IPTemporal);
+    void preguntarTipoConexion();
 };
 
 Conexion::Conexion(int puerto, string IP)
 {
-    if (IP == "" || IP  == getIPLocal())
+    if (IP == "" || IP == getIPLocal())
     {
         this->IP = getIPLocal();
         IPLocal = true;
@@ -43,6 +46,8 @@ Conexion::Conexion(int puerto, string IP)
         this->IP = IP;
     }
     this->puerto = puerto;
+
+    preguntarTipoConexion();
 }
 
 string Conexion::getIP()
@@ -60,6 +65,7 @@ void Conexion::mostrarEstadoConexion()
     cout << "IP:" << getIP() << endl;
     cout << "Es IP local: " << (IPLocal ? "Si" : "No") << endl;
     cout << "Puerto: " << getPuerto() << endl;
+    cout << "Intraconexion: " << (intraconexion ? "Si" : "No") << endl;
 }
 
 string Conexion::getIPLocal()
@@ -72,6 +78,10 @@ string Conexion::getIPLocal()
 }
 
 
+bool Conexion::esIntraconexion()
+{
+    return intraconexion;
+}
 
 // Función para validar una dirección IP
 bool Conexion::esIPValida(string IPTemporal)
@@ -100,5 +110,28 @@ bool Conexion::esIPValida(string IPTemporal)
 bool Conexion::esIPLocal()
 {
     return IPLocal;
+}
+
+void Conexion::preguntarTipoConexion()
+{
+    string respuesta;
+    cout << "¿Establecer conexion en mismo sistema?" << endl;
+    cout << "0. No\n1. Si" << endl;
+    do
+    {
+        cin >> respuesta;
+        if(comun::esNumero(respuesta) && (respuesta == "0" || respuesta == "1"))
+        {
+            intraconexion = stoi(respuesta); // queda dando vueltas
+            if(respuesta == "1")
+            {
+                IP = "0.0.0.0"; // deberia ser un archivo aparte que use sys/un.h para af_unix
+            }
+            
+        }
+        else{
+            cout << "Respuesta invalida" << endl;
+        }
+    } while (respuesta != "0" && respuesta != "1");
 }
 #endif
