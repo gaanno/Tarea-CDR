@@ -77,7 +77,7 @@ string Tablero::getTableroComoMensaje()
         mensaje.append(fila < LARGO_TABLERO ? string(1, letraFila++) + "\t|\t" : "\t\t");
         for (int columna = 0; columna < LARGO_TABLERO; columna++)
         {
-            mensaje.append(fila < LARGO_TABLERO ? string(1, tablero[fila][columna]) : (fila == LARGO_TABLERO ? "-" : to_string(columna)));
+            mensaje.append(fila < LARGO_TABLERO ? string(1, tablero[fila][columna]) : (fila == LARGO_TABLERO ? " " : to_string(columna)));
             mensaje.append("\t");
         }
         mensaje.append("\n");
@@ -109,7 +109,7 @@ string Tablero::getTableroOcultoComoMensaje()
             }
             else
             {
-                mensaje.append(fila == LARGO_TABLERO ? "-" : to_string(columna));
+                mensaje.append(fila == LARGO_TABLERO ? " " : to_string(columna));
             }
             mensaje.append("\t");
         }

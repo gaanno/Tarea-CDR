@@ -16,11 +16,10 @@ int main(int argc, char *argv[])
 
     try
     {
-        cliente.enviarMensaje("IP: " + cliente.getIP());
+        cliente.enviarMensaje("\nIP: " + cliente.getIP());
         cliente.recibirMensaje();
         while (true)
         {
-            cout << "Ingrese su mensaje: " << endl;
             if (getline(cin, mensaje))
             {
                 if (mensaje.empty())

@@ -37,6 +37,7 @@ int main(int argc, char *argv[])
             const string mensajeTablero = "Su tablero se ha llenado de forma automatica:\n";
             string usuarioInicial = "Comienza: ";
             usuarioInicial += comienzaServidor ? "Servidor\n" : "Cliente\n";
+            const string mensajeTurno = "\nSu turno, ingrese coordenadas:";
             int fila, columna;
             cout << usuarioInicial << endl;
 
@@ -45,8 +46,9 @@ int main(int argc, char *argv[])
 
             try
             {
-                servidor.enviarMensaje(mensajeInicial + formatoDisparo + ejemploDisparo + usuarioInicial + mensajeTablero + tableroCliente.getTableroComoMensaje());
+                servidor.enviarMensaje(mensajeInicial + formatoDisparo + ejemploDisparo + usuarioInicial + mensajeTablero + tableroCliente.getTableroComoMensaje() + mensajeTurno);
                 servidor.recibirMensaje();
+                mensajeAnterior = servidor.getUltimoMensaje();
                 while (true)
                 {
                     if (servidor.getUltimoMensaje() != mensajeAnterior)
@@ -144,8 +146,10 @@ string getResultadoParcial(Tablero servidor, Tablero cliente)
     string resultado;
     resultado = "Resultados parciales: \n";
     resultado += "Tablero del servidor: \n" + servidor.getTableroOcultoComoMensaje();
-    resultado += "-------------------\n";
+    resultado += "\n-------------------\n";
     resultado += "Su tablero: \n" + cliente.getTableroComoMensaje();
+    resultado += "\n-------------------\n";
+    resultado += "Ingrese coordenadas para atacar: \n";
     return resultado;
 }
 
