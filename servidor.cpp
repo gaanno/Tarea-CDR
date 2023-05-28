@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <time.h>
-#include <omp.h> // hilo
+#include <omp.h>
 
 #include "clases/Tablero/Tablero.h"
 #include "clases/Barco/Barco.h"
