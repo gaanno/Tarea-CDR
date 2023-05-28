@@ -24,3 +24,12 @@ Compilar solo cliente
 
 Eliminar archivos cliente y servidor
 - Make clean
+
+Instucciones de uso:
+
+- ./servidor <puerto>
+
+- ./cliente <ip> <puerto>
+
+En donde <ip> es la direccion ip que se quiere usar.
+En donde <puerto> es el puerto que se quiere usar.
