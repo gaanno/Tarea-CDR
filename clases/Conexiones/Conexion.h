@@ -19,6 +19,7 @@ public:
     bool esIPLocal();
     bool esIntraconexion();
     void mostrarEstadoConexion();
+    void preguntarTipoConexion();
 
 private:
     string IP;
@@ -26,7 +27,6 @@ private:
     bool intraconexion;
     bool IPLocal = false;
     bool esIPValida(string IPTemporal);
-    void preguntarTipoConexion();
 };
 
 Conexion::Conexion(int puerto, string IP)
@@ -47,7 +47,6 @@ Conexion::Conexion(int puerto, string IP)
     }
     this->puerto = puerto;
 
-    preguntarTipoConexion();
 }
 
 string Conexion::getIP()

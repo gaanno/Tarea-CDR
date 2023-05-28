@@ -14,15 +14,12 @@ int main(int argc, char *argv[])
     ConexionCliente cliente = ConexionCliente(atoi(argv[2]), argv[1]);
     string mensaje;
 
-    
-
     try
     {
         cliente.recibirMensaje();
-        cliente.recibirMensaje();
+        cliente.enviarMensaje("\nIP: " + cliente.getIP());
         while (true)
         {
-            cout << "Ingrese su mensaje: " << endl;
             if (getline(cin, mensaje))
             {
                 if (mensaje.empty())

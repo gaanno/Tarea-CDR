@@ -6,7 +6,7 @@
 
 #include "Conexion.h"
 
-#define TAMANO_BUFFER 1024
+#define TAMANO_BUFFER 2048
 
 using namespace std;
 
@@ -21,6 +21,7 @@ public:
     void cerrarConexion();
     void recibirMensaje();
     bool estaConectado();
+    string getIP();
 
 private:
     int status;
@@ -36,11 +37,18 @@ private:
 
 ConexionCliente::ConexionCliente(int puerto, string IPServidor) : Conexion(puerto, IPServidor)
 {
+    Conexion::preguntarTipoConexion();
+    
     configurarConexion();
     configurarSocket();
     configurarEstado();
     validarConexion();
 
+}
+
+string ConexionCliente::getIP()
+{
+  return Conexion::getIP();
 }
 
 void ConexionCliente::mostrarEstadoConexion()
