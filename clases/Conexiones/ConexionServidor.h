@@ -9,7 +9,7 @@
 #ifndef CONEXIONSERVIDOR_H
 #define CONEXIONSERVIDOR_H
 
-#define TAMANO_BUFFER 1024
+#define TAMANO_BUFFER 2048
 
 class ConexionServidor : private Conexion
 {

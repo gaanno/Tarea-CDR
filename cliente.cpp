@@ -14,11 +14,8 @@ int main(int argc, char *argv[])
     ConexionCliente cliente = ConexionCliente(atoi(argv[2]), argv[1]);
     string mensaje;
 
-    
-
     try
     {
-        cliente.recibirMensaje();
         cliente.recibirMensaje();
         while (true)
         {

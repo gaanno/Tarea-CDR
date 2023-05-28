@@ -6,7 +6,7 @@
 
 #include "Conexion.h"
 
-#define TAMANO_BUFFER 1024
+#define TAMANO_BUFFER 2048
 
 using namespace std;
 
