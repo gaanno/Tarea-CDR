@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <time.h>
+#include <omp.h> // hilo
 
 #include "clases/Tablero/Tablero.h"
 #include "clases/Barco/Barco.h"
@@ -15,82 +16,102 @@ string getResultadoParcial(Tablero cliente, Tablero servidor);
 
 int main(int argc, char *argv[])
 {
-    srand(time(0)); // para random
 
-    verificarArgumentosServidor(argc, argv);
-    ConexionServidor servidor(atoi(argv[1]));
-    string mensajeAnterior = "";
-    Tablero tableroServidor; // tablero que sera del servidor
-    Tablero tableroCliente;  // tablero que sera del cliente
-
-    const string formatoDisparo = "Para disparar por favor primero ingrese la fila y luego la columna separados por un espacio\n";
-    const string ejemploDisparo = "Ejemplo de disparo: A 1\n\n";
-    const string mensajeInicial = "Bienvenido al juego de batalla naval\n";
-    const string mensajeTablero = "Su tablero se ha llenado de forma automatica:\n";
-
-    int fila, columna;
-
-    tableroServidor.imprimirTablero();
-    tableroCliente.imprimirTablero();
-    try
+    while (true)
     {
-        servidor.enviarMensaje(formatoDisparo + ejemploDisparo + mensajeTablero + tableroCliente.getTableroComoMensaje());
-        servidor.recibirMensaje();
-        while (true)
+#pragma omp parallel
         {
-            if (servidor.getUltimoMensaje() != mensajeAnterior)
+            srand(time(0)); // para random
+            verificarArgumentosServidor(argc, argv);
+
+            ConexionServidor servidor(atoi(argv[1]));
+            string mensajeAnterior = "";
+            Tablero tableroServidor; // tablero que sera del servidor
+            Tablero tableroCliente;  // tablero que sera del cliente
+
+            const bool comienzaServidor = rand() % 2;
+
+            const string mensajeInicial = "Bienvenido al juego de batalla naval\n";
+            const string formatoDisparo = "Para disparar por favor primero ingrese la fila y luego la columna separados por un espacio\n";
+            const string ejemploDisparo = "Ejemplo de disparo: A 1\n\n";
+            const string mensajeTablero = "Su tablero se ha llenado de forma automatica:\n";
+            string usuarioInicial = "Comienza: ";
+            usuarioInicial += comienzaServidor ? "Servidor\n" : "Cliente\n";
+            int fila, columna;
+            cout << usuarioInicial << endl;
+
+            // tableroServidor.imprimirTablero();
+            // tableroCliente.imprimirTablero();
+
+            try
             {
-                mensajeAnterior = servidor.getUltimoMensaje();
-                cout << "msg: " << servidor.getUltimoMensaje() << endl;
-
-                // divide las coordenadas obtenidasdel cliente
-                vector<string> coordenadas = comun::dividir(servidor.getUltimoMensaje(), ' ');
-
-                if (coordenadas.size() == 2)
+                servidor.enviarMensaje(mensajeInicial + formatoDisparo + ejemploDisparo + usuarioInicial + mensajeTablero + tableroCliente.getTableroComoMensaje());
+                servidor.recibirMensaje();
+                while (true)
                 {
-                    if (coordenadas.size() == 2 && !comun::esNumero(coordenadas[0]) && coordenadas[0].length() == 1 && comun::esNumero(coordenadas[1]))
+                    if (servidor.getUltimoMensaje() != mensajeAnterior)
                     {
-                        fila = toupper(coordenadas[0].c_str()[0]) - 'A';
-                        columna = stoi(coordenadas[1]);
-                    }
-                    else
-                    {
-                        servidor.enviarMensaje("Coordenadas invalidas");
-                        cout << "Coordenadas invalidas: " << coordenadas[0] << endl;
-                        continue;
-                    }
+                        mensajeAnterior = servidor.getUltimoMensaje();
+                        cout << "msg: " << servidor.getUltimoMensaje() << endl;
 
-                    if (fila < 0 || fila > LARGO_TABLERO || columna < 0 || columna > LARGO_TABLERO)
-                    {
-                        servidor.enviarMensaje("Coordenadas invalidas");
-                        cout << "Coordenadas invalidas: " << coordenadas[0] << endl;
-                        continue;
+                        // divide las coordenadas obtenidasdel cliente
+                        vector<string> coordenadas = comun::dividir(servidor.getUltimoMensaje(), ' ');
+
+                        if (coordenadas.size() == 2)
+                        {
+                            if (coordenadas.size() == 2 && !comun::esNumero(coordenadas[0]) && coordenadas[0].length() == 1 && comun::esNumero(coordenadas[1]))
+                            {
+                                fila = toupper(coordenadas[0].c_str()[0]) - 'A';
+                                columna = stoi(coordenadas[1]);
+                            }
+                            else
+                            {
+                                servidor.enviarMensaje("Coordenadas invalidas");
+                                cout << "Coordenadas invalidas: " << coordenadas[0] << endl;
+                                continue;
+                            }
+
+                            if (fila < 0 || fila > LARGO_TABLERO || columna < 0 || columna > LARGO_TABLERO)
+                            {
+                                servidor.enviarMensaje("Coordenadas invalidas");
+                                cout << "Coordenadas invalidas: " << coordenadas[0] << endl;
+                                continue;
+                            }
+                            if (comienzaServidor)
+                            {
+                                tableroCliente.disparoAleatorio();
+                                tableroServidor.disparar(fila, columna);
+                            }
+                            else
+                            {
+                                tableroServidor.disparar(fila, columna);
+                                tableroCliente.disparoAleatorio();
+                            }
+                        }
+                        if (tableroCliente.getVidasBarcos() == 0)
+                        {
+                            servidor.enviarMensaje("Perdiste");
+                            exit(0);
+                        }
+                        else if (tableroServidor.getVidasBarcos() == 0)
+                        {
+                            servidor.enviarMensaje("Ganaste");
+                            exit(0);
+                        }
+                        servidor.enviarMensaje(getResultadoParcial(tableroServidor, tableroCliente));
                     }
-                    tableroServidor.disparar(fila, columna);
-                    tableroCliente.disparoAleatorio();
+                    servidor.recibirMensaje();
                 }
-                if (tableroCliente.getVidasBarcos() == 0)
-                {
-                    servidor.enviarMensaje("Perdiste");
-                    break;
-                }
-                else if (tableroServidor.getVidasBarcos() == 0)
-                {
-                    servidor.enviarMensaje("Ganaste");
-                    break;
-                }
-                servidor.enviarMensaje(getResultadoParcial(tableroServidor, tableroCliente));
             }
-            servidor.recibirMensaje();
+            catch (const std::exception &e)
+            {
+                std::cerr << e.what() << '\n';
+            }
+            cout << "Fin del juego, saliendo..." << endl;
+            servidor.cerrarConexion();
+            servidor.apagar();
         }
     }
-    catch (const std::exception &e)
-    {
-        std::cerr << e.what() << '\n';
-    }
-    cout << "Fin del juego, saliendo..." << endl;
-    servidor.cerrarConexion();
-    servidor.apagar();
 
     return 0;
 }
@@ -107,7 +128,6 @@ void verificarArgumentosServidor(int argc, char *argv[])
 vector<Barco> inicializarBarcos()
 {
     vector<Barco> barcos;
-    /*
     barcos.push_back(Barco('P', 5));
     barcos.push_back(Barco('B', 4));
     barcos.push_back(Barco('B', 4));
@@ -115,7 +135,6 @@ vector<Barco> inicializarBarcos()
     barcos.push_back(Barco('S', 3));
     barcos.push_back(Barco('L', 1));
     barcos.push_back(Barco('L', 1));
-    */
     barcos.push_back(Barco('L', 1));
     return barcos;
 }

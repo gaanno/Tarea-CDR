@@ -1,17 +1,14 @@
 CC = g++ -std=c++17
-CFLAGS = -o
 CLIENTE = cliente
-SERVIDOR = servidor
-CLASE_COMUN = clases/Comun.h
-CLASES_SERVIDOR = clases/Tablero.cpp clases/Barco.cpp
-CLASES_CLIENTE = 
+CLASES_SERVIDOR = clases/Tablero/Tablero.h clases/Barco/Barco.h clases/Comun.h clases/Conexiones/ConexionServidor.h
+CLASES_CLIENTE = clases/Conexiones/ConexionCliente.h  clases/Comun.h
 
 #all:
 
-$(SERVIDOR): $(SERVIDOR).cpp $(CLASES_SERVIDOR) $(CLASE_COMUN)
-	$(CC) $(CFLAGS) $(SERVIDOR) $(SERVIDOR).cpp 
+$(SERVIDOR): $(SERVIDOR).cpp $(CLASES_SERVIDOR) 
+	$(CC) servidor.cpp -o servidor -fopenmp 
 
-$(CLIENTE): $(CLIENTE).cpp $(CLASES_CLIENTE) $(CLASE_COMUN)
-	$(CC) $(CFLAGS) $(CLIENTE) $(CLIENTE).cpp   
+$(CLIENTE): $(CLIENTE).cpp $(CLASES_CLIENTE) 
+	$(CC) -o $(CLIENTE) $(CLIENTE).cpp   
  
 #clean:

@@ -6,7 +6,7 @@
 
 #define LARGO_TABLERO 15
 // #define RANURA_VACIA '\0'
-#define RANURA_VACIA ' '
+#define RANURA_VACIA '.'
 
 using namespace std;
 
@@ -15,7 +15,7 @@ class Tablero
 private:
     char tablero[LARGO_TABLERO][LARGO_TABLERO];
     vector<Barco> barcos; // Para almacenar los barcos
-    int vidasBarcos = 1;
+    int vidasBarcos = 22;
 
 public:
     Tablero();
@@ -88,7 +88,6 @@ string Tablero::getTableroOcultoComoMensaje()
 {
     string mensaje;
     char letraFila = 'A';
-
     for (int fila = 0; fila < LARGO_TABLERO + 2; fila++)
     {
         mensaje.append(fila < LARGO_TABLERO ? string(1, letraFila++) + "\t|\t" : "\t\t");
@@ -104,7 +103,7 @@ string Tablero::getTableroOcultoComoMensaje()
                 }
                 else
                 {
-                    mensaje.append(" ");
+                    mensaje.append(string(1, RANURA_VACIA));
                 }
             }
             else
