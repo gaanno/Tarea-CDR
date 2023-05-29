@@ -9,7 +9,7 @@ cliente: cliente.cpp $(CLASESCLIENTE)
 	$(CC) $(CFLAGS) -o cliente cliente.cpp
 
 servidor: servidor.cpp $(CLASESSERVIDOR)
-	$(CC) $(CFLAGS) -o servidor servidor.cpp  -lpthread -fopenmp
+	$(CC) $(CFLAGS) -o servidor servidor.cpp -fopenmp
 
 clean:
 	rm -f cliente servidor
