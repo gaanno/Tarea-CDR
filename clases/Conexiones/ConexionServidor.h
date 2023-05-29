@@ -9,7 +9,7 @@
 #ifndef CONEXIONSERVIDOR_H
 #define CONEXIONSERVIDOR_H
 
-#define TAMANO_BUFFER 1024
+#define TAMANO_BUFFER 2048
 
 class ConexionServidor : private Conexion
 {
@@ -119,7 +119,7 @@ void ConexionServidor::escucharPuerto()
         perror("bind failed");
         exit(EXIT_FAILURE);
     }
-    if (listen(server_fd, 3) < 0)
+    if (listen(server_fd, 10) < 0)
     {
         perror("listen");
         exit(EXIT_FAILURE);

@@ -2,6 +2,8 @@
 
 using namespace std;
 
+#ifndef BARCO_H
+#define BARCO_H
 class Barco
 {
     public:
@@ -26,4 +28,5 @@ char Barco::getNombre(){
 int Barco::getLargo(){
     return this->largo;
 }
+#endif
 

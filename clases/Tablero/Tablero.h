@@ -2,18 +2,13 @@
 #include <iostream>
 #include <vector>
 #include <string>
-<<<<<<< HEAD
 #include "clases/Barco/Barco.h"
-=======
-
-#include "../Barco/Barco.h"
->>>>>>> main
 
 #define LARGO_TABLERO 15
 // #define RANURA_VACIA '\0'
 #define RANURA_VACIA '.'
 
-using namespace std;
+using namespace std;std::vector<Barco> inicializarBarcos(); // Declaración de la función inicializarBarcos()
 
 class Tablero
 {
