@@ -27,9 +27,15 @@ Eliminar archivos cliente y servidor
 
 Instucciones de uso:
 
-- ./servidor < puerto >
+- ./servidor PUERTO
 
-- ./cliente < ip > < puerto >
+- ./cliente IP PUERTO
 
-En donde < ip > es la direccion ip que se quiere usar.
-En donde < puerto > es el puerto que se quiere usar.
+En donde < IP > es la direccion ip que se quiere usar.
+En donde < PUERTO > es el puerto que se quiere usar.
+
+- Ejemplo de uso
+
+- ./servidor 50000
+
+- ./cliente 0.0.0.0 50000
