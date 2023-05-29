@@ -36,5 +36,6 @@ En donde < PUERTO > es el puerto que se quiere usar.
 
 - Ejemplo de uso
 
-./servidor 50000
-./cliente 0.0.0.0 50000
+- ./servidor 50000
+
+- ./cliente 0.0.0.0 50000
