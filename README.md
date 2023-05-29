@@ -23,7 +23,7 @@ Compilar solo cliente
 - make cliente
 
 Eliminar archivos cliente y servidor
-- Make clean
+- make clean
 
 Instucciones de uso:
 
