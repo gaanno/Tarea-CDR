@@ -3,7 +3,7 @@ CFLAGS = -o
 CLIENTE = cliente
 SERVIDOR = servidor
 CLASE_COMUN = clases/Comun.h
-CLASES_SERVIDOR = clases/Tablero.cpp clases/Barco.cpp
+CLASES_SERVIDOR = clases/Tablero/Tablero.h clases/Barco/Barco.h
 CLASES_CLIENTE = 
 
 #all:
